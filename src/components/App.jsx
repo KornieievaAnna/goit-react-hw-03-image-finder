@@ -1,11 +1,11 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import { AppStyle } from './App.styled';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
 
-export default class App extends Component {
+class App extends Component {
   state = {
     key: '32996864-5f1a960915a219f7f2c6f1a79',
     q: '',
@@ -56,3 +56,5 @@ export default class App extends Component {
     );
   }
 }
+
+export default App;
