@@ -4,6 +4,9 @@ import { AppStyle } from './App.styled';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
+import Notiflix from 'notiflix';
+
+import * as Api from 'service/api';
 
 class App extends Component {
   state = {
@@ -11,7 +14,35 @@ class App extends Component {
     page: 1,
     showModal: false,
     modalUrl: '',
-    showButton: false,
+    hits: [],
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevState.q);
+    console.log(this.state.q);
+    if (prevState.q !== this.state.q || prevState.page !== this.state.page) {
+      this.getHits(this.state.q, this.state.page);
+    }
+  }
+
+  getHits = async (name, page) => {
+    try {
+      console.log(name, page);
+      const images = await Api.getImages(name, page);
+      if (!images.length) {
+        Notiflix.Notify.failure(
+          `Sorry, there are no images matching your search query "${name}". Please try again.`
+        );
+        // this.setState({ hits: [] });
+      }
+
+      this.setState(prev => ({
+        hits: [...prev.hits, ...images],
+      }));
+      console.log(images);
+    } catch (error) {
+      console.log('error');
+    }
   };
 
   toggleModal = () => {
@@ -25,7 +56,7 @@ class App extends Component {
   };
 
   handleFormSubmit = name => {
-    this.setState({ q: name, showButton: true });
+    this.setState({ hits: [], q: name, page: 1 });
   };
 
   handleLoadMore = () => {
@@ -33,7 +64,7 @@ class App extends Component {
   };
 
   render() {
-    const { showModal, showButton } = this.state;
+    const { showModal } = this.state;
     return (
       <AppStyle>
         {showModal && (
@@ -42,12 +73,15 @@ class App extends Component {
           </Modal>
         )}
         <Searchbar onSubmit={this.handleFormSubmit} />
+
         <ImageGallery
-          imgInfo={this.state}
+          imgInfo={this.state.hits}
           openModal={this.toggleModal}
           modalUrl={this.handleModalOpen}
         ></ImageGallery>
-        {showButton && <Button loadMore={this.handleLoadMore} />}
+        {this.state.hits.length > 0 && (
+          <Button loadMore={this.handleLoadMore} />
+        )}
       </AppStyle>
     );
   }

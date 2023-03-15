@@ -8,6 +8,7 @@ import {
 } from './Searchbar.styled';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { Component } from 'react';
+import Notiflix from 'notiflix';
 
 export default class Searchbar extends Component {
   state = {
@@ -21,7 +22,7 @@ export default class Searchbar extends Component {
   handleSubmit = event => {
     event.preventDefault();
     if (this.state.name.trim() === '') {
-      alert('Please enter a name');
+      Notiflix.Notify.failure(`Please enter a name`);
       return;
     }
     this.props.onSubmit(this.state.name);

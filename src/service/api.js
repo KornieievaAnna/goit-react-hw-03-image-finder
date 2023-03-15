@@ -12,6 +12,7 @@ axios.defaults.params = {
 };
 
 export async function getImages(name, page) {
-  const  {data}  = await axios.get(`?q=${name}&page=${page}`);
+  const { data } = await axios.get(`?q=${name}&page=${page}`);
+  console.log(data.hits);
   return data.hits;
 }

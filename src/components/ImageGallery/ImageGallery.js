@@ -4,45 +4,18 @@ import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryStyled } from './ImageGallery.styled';
 import { Audio } from 'react-loader-spinner';
 
-import * as Api from 'service/api';
-
 export default class ImageGallery extends Component {
   state = {
-    name: this.props.imgInfo.q,
-    page: this.props.imgInfo.page,
-    hits: [],
     loading: false,
-    listRef: React.createRef(),
-  };
-
-
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.imgInfo.q !== this.props.imgInfo.q ||
-      prevProps.imgInfo.page !== this.props.imgInfo.page
-    ) {
-      this.getHits(this.props.imgInfo.q, this.props.imgInfo.page);
-    }
-  }
-
-  getHits = async (name, page) => {
-    try {
-      console.log(name, page);
-      const images = await Api.getImages(name, page);
-      this.setState(prev => ({ hits: [...prev.hits, ...images] }));
-      console.log(images);
-    } catch (error) {
-      console.log('error');
-    }
   };
 
   render() {
-    const { hits, loading } = this.state;
+    const {  loading } = this.state;
     return (
       <ImageGalleryStyled>
-        {hits && (
+        {this.props.imgInfo && (
           <ImageGalleryItem
-            images={hits}
+            images={this.props.imgInfo}
             openModal={this.props.openModal}
             getModalUrl={this.props.modalUrl}
           />
