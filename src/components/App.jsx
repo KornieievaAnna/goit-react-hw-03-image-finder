@@ -8,6 +8,8 @@ import Notiflix from 'notiflix';
 
 import * as Api from 'service/api';
 
+import { Dna } from 'react-loader-spinner';
+
 class App extends Component {
   state = {
     q: '',
@@ -15,33 +17,31 @@ class App extends Component {
     showModal: false,
     modalUrl: '',
     hits: [],
+    loading: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(prevState.q);
-    console.log(this.state.q);
     if (prevState.q !== this.state.q || prevState.page !== this.state.page) {
       this.getHits(this.state.q, this.state.page);
+      this.setState({ isLoading: true });
     }
   }
 
   getHits = async (name, page) => {
     try {
-      console.log(name, page);
       const images = await Api.getImages(name, page);
       if (!images.length) {
         Notiflix.Notify.failure(
           `Sorry, there are no images matching your search query "${name}". Please try again.`
         );
-        // this.setState({ hits: [] });
       }
-
       this.setState(prev => ({
         hits: [...prev.hits, ...images],
       }));
-      console.log(images);
     } catch (error) {
       console.log('error');
+    } finally {
+      this.setState({ isLoading: false });
     }
   };
 
@@ -64,7 +64,7 @@ class App extends Component {
   };
 
   render() {
-    const { showModal } = this.state;
+    const { showModal, loading } = this.state;
     return (
       <AppStyle>
         {showModal && (
@@ -79,6 +79,16 @@ class App extends Component {
           openModal={this.toggleModal}
           modalUrl={this.handleModalOpen}
         ></ImageGallery>
+        {loading && (
+          <Dna
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="dna-loading"
+            wrapperStyle={{}}
+            wrapperClass="dna-wrapper"
+          />
+        )}
         {this.state.hits.length > 0 && (
           <Button loadMore={this.handleLoadMore} />
         )}
