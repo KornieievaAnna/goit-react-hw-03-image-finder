@@ -1,34 +1,40 @@
 import { Component } from 'react';
+import React from 'react';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryStyled } from './ImageGallery.styled';
 import { Audio } from 'react-loader-spinner';
 
+import * as Api from 'service/api';
+
 export default class ImageGallery extends Component {
   state = {
-    hits: null,
+    name: this.props.imgInfo.q,
+    page: this.props.imgInfo.page,
+    hits: [],
     loading: false,
-    
+    listRef: React.createRef(),
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { key, q, image_type, orientation, page, per_page } =
-      this.props.imgInfo;
 
+  componentDidUpdate(prevProps, prevState) {
     if (
       prevProps.imgInfo.q !== this.props.imgInfo.q ||
       prevProps.imgInfo.page !== this.props.imgInfo.page
     ) {
-      this.setState({ loading: true });
-
-      fetch(
-        `https://pixabay.com/api/?q=${q}&page=${page}&key=${key}&image_type=${image_type}&orientation=${orientation}&per_page=${per_page}`
-      )
-        .then(response => response.json())
-        .then(hits => this.setState({ ...hits, ...prevState.hits }))
-        .finally(() => this.setState({ loading: false }));
+      this.getHits(this.props.imgInfo.q, this.props.imgInfo.page);
     }
-    console.log(this.state.hits);
   }
+
+  getHits = async (name, page) => {
+    try {
+      console.log(name, page);
+      const images = await Api.getImages(name, page);
+      this.setState(prev => ({ hits: [...prev.hits, ...images] }));
+      console.log(images);
+    } catch (error) {
+      console.log('error');
+    }
+  };
 
   render() {
     const { hits, loading } = this.state;

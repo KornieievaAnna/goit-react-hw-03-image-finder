@@ -7,12 +7,8 @@ import Button from './Button/Button';
 
 class App extends Component {
   state = {
-    key: '32996864-5f1a960915a219f7f2c6f1a79',
     q: '',
-    image_type: 'photo',
-    orientation: 'horizontal',
-    page: '1',
-    per_page: '12',
+    page: 1,
     showModal: false,
     modalUrl: '',
     showButton: false,
@@ -29,11 +25,11 @@ class App extends Component {
   };
 
   handleFormSubmit = name => {
-    this.setState({ q: name });
+    this.setState({ q: name, showButton: true });
   };
 
   handleLoadMore = () => {
-    this.setState({ page: this.state.page + 1 });
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
