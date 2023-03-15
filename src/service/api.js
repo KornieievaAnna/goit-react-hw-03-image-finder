@@ -8,11 +8,12 @@ axios.defaults.params = {
   key: API_KEY,
   image_type: 'photo',
   orientation: 'horizontal',
-  per_page: '12',
 };
 
-export async function getImages(name, page) {
-  const { data } = await axios.get(`?q=${name}&page=${page}`);
+export async function getImages(name, page, perpage) {
+  const { data } = await axios.get(
+    `?q=${name}&page=${page}&per_page=${perpage}`
+  );
   console.log(data.hits);
   return data.hits;
 }

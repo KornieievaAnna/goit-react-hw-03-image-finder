@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
-import Searchbar from './Searchbar/Searchbar';
 import { AppStyle } from './App.styled';
-import ImageGallery from './ImageGallery/ImageGallery';
-import Modal from './Modal/Modal';
-import Button from './Button/Button';
+import { Searchbar, Modal, Button, Loader, ImageGallery } from './index';
+
 import Notiflix from 'notiflix';
-
 import * as Api from 'service/api';
-
-import { Dna } from 'react-loader-spinner';
 
 class App extends Component {
   state = {
     q: '',
     page: 1,
+    perPage: 12,
     showModal: false,
     modalUrl: '',
     hits: [],
@@ -21,15 +17,17 @@ class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.q !== this.state.q || prevState.page !== this.state.page) {
-      this.getHits(this.state.q, this.state.page);
+    const { q, page } = this.state;
+    if (prevState.q !== q || prevState.page !== page) {
       this.setState({ isLoading: true });
+      this.getHits(this.state.q, this.state.page, this.state.perPage);
     }
+    window.scrollBy(0, window.innerHeight);
   }
 
-  getHits = async (name, page) => {
+  getHits = async (name, page, perpage) => {
     try {
-      const images = await Api.getImages(name, page);
+      const images = await Api.getImages(name, page, perpage);
       if (!images.length) {
         Notiflix.Notify.failure(
           `Sorry, there are no images matching your search query "${name}". Please try again.`
@@ -64,32 +62,22 @@ class App extends Component {
   };
 
   render() {
-    const { showModal, loading } = this.state;
+    const { showModal, loading, modalUrl, hits, perPage } = this.state;
     return (
       <AppStyle>
         {showModal && (
-          <Modal modalImg={this.state.modalUrl} onClose={this.toggleModal}>
-            <img src={this.state.modalUrl} alt="" />
+          <Modal modalImg={modalUrl} onClose={this.toggleModal}>
+            <img src={modalUrl} alt={hits.tags} />
           </Modal>
         )}
         <Searchbar onSubmit={this.handleFormSubmit} />
-
         <ImageGallery
-          imgInfo={this.state.hits}
+          imgInfo={hits}
           openModal={this.toggleModal}
           modalUrl={this.handleModalOpen}
         ></ImageGallery>
-        {loading && (
-          <Dna
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="dna-loading"
-            wrapperStyle={{}}
-            wrapperClass="dna-wrapper"
-          />
-        )}
-        {this.state.hits.length > 0 && (
+        {loading && <Loader />}
+        {hits.length >= perPage && !loading && (
           <Button loadMore={this.handleLoadMore} />
         )}
       </AppStyle>

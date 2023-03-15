@@ -10,7 +10,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { Component } from 'react';
 import Notiflix from 'notiflix';
 
-export default class Searchbar extends Component {
+export class Searchbar extends Component {
   state = {
     name: '',
   };
