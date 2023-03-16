@@ -18,10 +18,12 @@ class App extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { q, page } = this.state;
+
     if (prevState.q !== q || prevState.page !== page) {
       this.setState({ isLoading: true });
       this.getHits(this.state.q, this.state.page, this.state.perPage);
     }
+
     window.scrollBy(0, window.innerHeight);
   }
 
@@ -53,7 +55,17 @@ class App extends Component {
     this.setState({ modalUrl: url });
   };
 
+  // handleFormSubmit = name => {
+  //   this.setState({ hits: [], q: name, page: 1 });
+  // };
+
   handleFormSubmit = name => {
+    if (this.state.q === name) {
+      Notiflix.Notify.info(
+        `Your request "${name}" has already been completed! :-)`
+      );
+      return;
+    }
     this.setState({ hits: [], q: name, page: 1 });
   };
 
