@@ -55,10 +55,6 @@ class App extends Component {
     this.setState({ modalUrl: url });
   };
 
-  // handleFormSubmit = name => {
-  //   this.setState({ hits: [], q: name, page: 1 });
-  // };
-
   handleFormSubmit = name => {
     if (this.state.q === name) {
       Notiflix.Notify.info(
@@ -84,7 +80,7 @@ class App extends Component {
         )}
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ImageGallery
-          imgInfo={hits}
+          images={hits}
           openModal={this.toggleModal}
           modalUrl={this.handleModalOpen}
         ></ImageGallery>

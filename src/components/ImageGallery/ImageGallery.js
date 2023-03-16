@@ -1,17 +1,25 @@
 import React from 'react';
-import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
-import { ImageGalleryStyled } from './ImageGallery.styled';
+import {
+  ImageGalleryStyled,
+  ImageGalleryItemStyled,
+  ImageGalleryItemImage,
+} from './ImageGallery.styled';
 
-export function ImageGallery({ imgInfo, openModal, modalUrl }) {
+export function ImageGallery({ images, openModal, modalUrl }) {
   return (
     <ImageGalleryStyled>
-      {imgInfo && (
-        <ImageGalleryItem
-          images={imgInfo}
-          openModal={openModal}
-          getModalUrl={modalUrl}
-        />
-      )}
+      {images.map(image => (
+        <ImageGalleryItemStyled
+          key={image.id}
+          onClick={() => modalUrl(image.largeImageURL)}
+        >
+          <ImageGalleryItemImage
+            src={image.webformatURL}
+            alt={image.tags}
+            onClick={openModal}
+          />
+        </ImageGalleryItemStyled>
+      ))}
     </ImageGalleryStyled>
   );
 }
