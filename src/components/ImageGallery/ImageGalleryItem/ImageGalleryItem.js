@@ -3,18 +3,14 @@ import {
   ImageGalleryItemImage,
 } from './ImageGalleryItem.styled';
 
-export default function ImageGalleryItem({ image, openModal, getModalUrl}) {
+export default function ImageGalleryItem({ image, openModal, getModalUrl }) {
   return (
-        <ImageGalleryItemStyled
-          key={image.id}
-          onClick={() => getModalUrl(image.largeImageURL)}
-        >
-          <ImageGalleryItemImage
-            src={image.webformatURL}
-            alt={image.tags}
-            onClick={openModal}
-          />
-        </ImageGalleryItemStyled>
-    
+    <ImageGalleryItemStyled onClick={() => getModalUrl(image.largeImageURL)}>
+      <ImageGalleryItemImage
+        src={image.webformatURL}
+        alt={image.tags}
+        onClick={openModal}
+      />
+    </ImageGalleryItemStyled>
   );
 }
